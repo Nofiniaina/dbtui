@@ -8,7 +8,7 @@ pub struct App {
 impl App {
     pub fn new() -> App {
         App {
-            current_screen: CurrentScreen::Login,
+            current_screen: CurrentScreen::Workbench,
         }
     }
 }

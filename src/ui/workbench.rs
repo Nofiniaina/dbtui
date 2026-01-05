@@ -1,13 +1,13 @@
 use ratatui::{
     Frame,
     layout::{Constraint, Direction, Layout},
-    style::{Color, Style},
-    text::Text,
-    widgets::{Block, Borders, Paragraph},
 };
 
+use super::components::{header, sidebar, query, results, footer};
+
 pub fn draw(frame: &mut Frame) {
-    let chuncks = Layout::default()
+    // root layout
+    let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
             Constraint::Length(3),
@@ -16,15 +16,30 @@ pub fn draw(frame: &mut Frame) {
         ])
         .split(frame.area());
 
-    let title_block = Block::default()
-        .borders(Borders::ALL)
-        .style(Style::default());
+    // header
+    header::render(frame, chunks[0]);
 
-    let title = Paragraph::new(Text::styled(
-        "DBTUI Workbench",
-        Style::default().fg(Color::Green),
-    ))
-    .block(title_block);
+    // main layout
+    let main_layout = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints(vec![Constraint::Percentage(30), Constraint::Percentage(70)])
+        .split(chunks[1]);
 
-    frame.render_widget(title, chuncks[0]);
+    // sidebar
+    sidebar::render(frame, main_layout[0]);
+
+    // right layout
+    let right_layout = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints(vec![Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(main_layout[1]);
+
+    // query
+    query::render(frame, right_layout[0]);
+
+    // results
+    results::render(frame, right_layout[1]);
+
+    // footer
+    footer::render(frame, chunks[2]);
 }
